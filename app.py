@@ -9,23 +9,35 @@ st.set_page_config(
     layout="centered"
 )
 
+# ---------------- LOAD FILES (CACHED) ----------------
+@st.cache_resource
+def load_model():
+    model = joblib.load("car_price_model.pkl")
+    encoder = joblib.load("encoder.pkl")
+    model_columns = joblib.load("model_columns.pkl")
+    return model, encoder, model_columns
+
+@st.cache_data
+def load_data():
+    return pd.read_csv("car_dataset_clean.csv")
+
+model, encoder, model_columns = load_model()
+df = load_data()
+
+# ---------------- GET DROPDOWN LISTS ----------------
+brand_list = sorted(df["brand"].unique())
+fuel_list = sorted(df["fuel_type"].unique())
+seller_list = sorted(df["seller_type"].unique())
+
 # ---------------- CUSTOM CSS ----------------
 st.markdown("""
 <style>
-
 html, body, [class*="css"]  {
     font-family: 'Segoe UI', sans-serif;
 }
-
-/* Full Page Orange Background */
 .stApp {
     background-color: #fff9c4;
 }
-
-
-
-
-/* Title Box */
 .title-box {
     background-color: #0a66c2;
     padding: 25px;
@@ -34,59 +46,41 @@ html, body, [class*="css"]  {
     border: 2px solid #4caf50;
     margin-bottom: 35px;
 }
-
 .title-text {
     font-size: 42px;
     font-weight: bold;
     color: white;
 }
-
 .subtitle-text {
     font-size: 18px;
     color: #fff3e0;
     margin-top: 8px;
 }
-
-/* Button Styling */
 .stButton>button {
     background-color: #25d366;
     color: white;
-    font-size: 30px;
+    font-size: 24px;
     border-radius: 12px;
-    height: 60px;
-    width: 50%;
+    height: 55px;
+    width: 60%;
     margin: auto;
     display: block;
 }
-
-/* Result Box */
 .result-box {
     background-color: #5f259f;
     padding: 20px;
     border-radius: 15px;
     text-align: center;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: bold;
     color: #ffffff;
     margin-top: 25px;
     border: 3px solid #e65100;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- LOAD FILES ----------------
-model = joblib.load("car_price_model.pkl")
-encoder = joblib.load("encoder.pkl")
-model_columns = joblib.load("model_columns.pkl")
-df = pd.read_csv("car_dataset_clean.csv")
-
-brand_list = sorted(df["brand"].unique())
-
-# ---------------- MAIN CONTAINER ----------------
-st.markdown('<div class="main-container">', unsafe_allow_html=True)
-
-# ---------------- TITLE SECTION ----------------
+# ---------------- TITLE ----------------
 st.markdown("""
 <div class="title-box">
     <div class="title-text"> Used Car Price Predictor </div>
@@ -101,43 +95,29 @@ with col1:
     brand = st.selectbox("Brand", brand_list)
 
     filtered_models = df[df["brand"] == brand]["model"].unique()
-    model_list = sorted(filtered_models)
-
-    model_name = st.selectbox("Model", model_list)
+    model_name = st.selectbox("Model", sorted(filtered_models))
 
     filtered_cars = df[
         (df["brand"] == brand) &
         (df["model"] == model_name)
     ]["car_name"].unique()
 
-    car_list = sorted(filtered_cars)
-
-    car_name = st.selectbox("Car Name", car_list)
+    car_name = st.selectbox("Car Name", sorted(filtered_cars))
 
     transmission = st.selectbox("Transmission", ["Manual", "Automatic"])
-
     vehicle_age = st.slider("Vehicle Age", 0, 20, 5)
-
     km_driven = st.number_input("KM Driven", 0, 300000, 50000)
 
 with col2:
-    fuel_list = sorted(df["fuel_type"].unique())
     fuel_type = st.selectbox("Fuel Type", fuel_list)
-
-    seller_list = sorted(df["seller_type"].unique())
     seller_type = st.selectbox("Seller Type", seller_list)
 
-   
-
     mileage = st.number_input("Mileage", 0.0, 50.0, 18.0)
-
     engine = st.number_input("Engine (CC)", 500, 5000, 1200)
-
     max_power = st.number_input("Max Power", 20.0, 300.0, 80.0)
-
     seats = st.number_input("Seats", 2, 10, 5)
 
-# ---------------- PREDICT BUTTON ----------------
+# ---------------- PREDICT ----------------
 if st.button("🚀 Predict Price"):
 
     input_df = pd.DataFrame({
@@ -173,8 +153,7 @@ if st.button("🚀 Predict Price"):
         unsafe_allow_html=True
     )
 
-st.markdown('</div>', unsafe_allow_html=True)
-
+# ---------------- FOOTER ----------------
 st.markdown("""
     <div style="
         position: fixed;
