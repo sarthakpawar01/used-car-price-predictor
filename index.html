@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Used Car Price Predictor</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #F8F9FA;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #1E90FF;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 24px;
+    }
+    .container {
+        max-width: 600px;
+        margin: 30px auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    label {
+        display: block;
+        margin: 10px 0 5px;
+    }
+    input, select, button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    button {
+        background-color: #1E90FF;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+    }
+    button:hover {
+        background-color: #0b6fc2;
+    }
+    .result {
+        text-align: center;
+        font-size: 20px;
+        color: green;
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+<header>Used Car Price Predictor</header>
+<div class="container">
+    <h2>Predict Your Car's Price</h2>
+    <form id="carForm">
+        <label for="brand">Car Brand</label>
+        <select id="brand">
+            <option>Toyota</option>
+            <option>Honda</option>
+            <option>Maruti</option>
+        </select>
+
+        <label for="year">Year of Manufacture</label>
+        <input type="number" id="year" placeholder="Enter Year">
+
+        <label for="km">Kilometers Driven</label>
+        <input type="number" id="km" placeholder="Enter KMs">
+
+        <label for="fuel">Fuel Type</label>
+        <select id="fuel">
+            <option>Petrol</option>
+            <option>Diesel</option>
+            <option>CNG</option>
+        </select>
+
+        <label for="transmission">Transmission</label>
+        <select id="transmission">
+            <option>Manual</option>
+            <option>Automatic</option>
+        </select>
+
+        <button type="submit">Predict Price</button>
+    </form>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+document.getElementById("carForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    let price = Math.floor(Math.random() * 1000000); // placeholder prediction
+    document.getElementById("result").innerText = "Estimated Price: ₹" + price;
+});
+</script>
+</body>
+</html>
